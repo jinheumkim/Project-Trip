@@ -16,7 +16,11 @@
     <!-- jquery -->
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <link rel="shortcut icon" href="#">
+    <!-- slide image -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
 
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
     <title>김진흠 JinheumTrip</title>
 
@@ -82,8 +86,8 @@
 
       .background_img {
         width: 100%;
-        height: 100%;
-        background-image: url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8fA%3D%3D");
+        height: auto;
+        background-image: url("https://cdn.pixabay.com/photo/2016/09/16/23/31/aircraft-1675369_1280.jpg");
         background-size : cover;
         background-repeat: no-repeat;
       }
@@ -103,66 +107,255 @@
           color:#FFF;
       }
 
+       body, ul, li {
+        margin:0;
+        padding:0;
+        list-style:none;
+      }
+    
+      .slider-2 {
+          height:400px;
+          position:relative;
+      }
+      
+      .slider-2 .slides > div {
+          position:absolute;
+          top:0;
+          left:0;
+          width:100%;
+          height:100%;
+          background-position:center;
+          /* 이미지를 최대한 안짤리게 한다. */
+          background-size:cover;
+          /* 배경 반복 금지 */
+          background-repeat:no-repeat;
+          opacity:0;
+          transition: opacity 0.5s;
+      } 
+      
+      .slider-2 .slides > div.active {
+          opacity:1;
+      }
+      
+      @media ( max-width:700px ) {
+          .slider-2 {
+              height:300px;
+          }
+      }
+      
+      .slider-2 .page-nav {
+          position:absolute;
+          width:100%;
+          text-align:center;
+          bottom:0;
+          left:0;
+      }
+      
+      .slider-2 .page-nav > div {
+          display:inline-block;
+          width:15px;
+          height:15px;
+          background-color:rgba(255,255,255,0.5);
+          border-radius:2px;
+          cursor:pointer;
+      }
+      
+      .slider-2 .page-nav > div.active {
+          background-color:rgba(255,255,255,1);
+      }
+      
+      .slider-2>.side-btns>div{
+          position:absolute;
+          top:0;
+          left:0;
+          width:30%;
+          height:100%;
+          cursor:pointer;
+          z-index:10;
+      
+      }
+      
+      .slider-2>.side-btns>div>span:active{
+          transform:translatey(-40%);
+      }
+      .slider-2>.side-btns>div:last-child{
+          left:auto;
+          right:0;
+      }
+      
+      .slider-2>.side-btns>div>span{
+          position:absolute;
+          top:50%;
+          transform:translatey(-50%);
+          left:inherit;
+          right:inherit;
+          width:70px;
+          height:70px;
+          background-color:rgba(255,255,255,0.4);
+          border-radius:100%;
+          margin:0 10px;
+      }
+      .slider-2>.side-btns>div>span > i{
+          position:absolute;
+          top:50%;
+          left:50%;
+          font-size:3rem;
+          color:rgba(0,0,0,0.4);
+          transform:translateX(-70%) translateY(-50%);
+      }
+      
+      .slider-2>.side-btns>div:last-child>span > i {
+          transform:translateX(-20%) translateY(-50%);
+      }
+      
+      /* 슬라이드 버튼 끝 */ 
+
 
     </style>
   </head>
   <body>
-    <div class = "background_img" style="display: flex; width : 100%; height : 100%; flex-direction :column">
-      <nav class="navbar navbar-expand-lg navbar-light" style = "width :100%;">
-        <div class="container-fluid" style = "justify-content: space-between; min-width : 1000px">
-          <a style="margin-left : 20px; font-size :35px; color : white;" class="navbar-brand" href="/main">JinheumTrip</a>
-            <div style="display: flex;"> 
-              <input id = "search" placeholder="도시나 상품을 검색하세요" autocomplete="off" class="form-control me-2" style="width:400px; padding :13px 13px; border-radius :10px; background-color :transparent ;border :3;text-align : left; " >
-            </div>
-            <div style="display: flex; margin-right : 35px">
-              <button type= "button" class = "login" style="padding-right : 10px; background-color :rgb(105, 150, 235); padding :13px 13px; border :none; border-radius : 10px; color : white">로그인 및 회원가입 </button>
-            </div>
-        </div>
-      </nav>
+    <div style="display:flex; flex-direction : column; align-items :center;">
+      <div class = "background_img" style="display: flex; width : 1600px; height : 100%; flex-direction :column; background-position : center;">
+        <nav class="navbar navbar-expand-lg navbar-light" style = "display: flex; flex-direction :row; text-align:center; justify-content:center;">
+          <div class="container-fluid" style="padding-top :10px; width:1400px; min-width :1060px">
+            <a style="font-size :35px; color : white;" class="navbar-brand" href="/main">JinheumTrip</a>
+              <div style="display: flex;"> 
+                <input id = "search" placeholder="도시나 상품을 검색하세요" autocomplete="off" class="form-control me-2" style="width:400px; padding :13px 13px; border-radius :10px; background-color :transparent ;border :3;text-align : left; color :#FFF" >
+              </div>
+              <div style="display: flex;">
+                <button type= "button" class = "login" style="padding-right : 10px; background-color :rgb(105, 150, 235); padding :13px 13px; border :none; border-radius : 10px; color : white">로그인 및 회원가입 </button>
+              </div>
+          </div>
+        </nav>
 
-      <div style="display: flex; flex-direction :row; text-align:center; justify-content:center; padding-top : 60px">
-        <div class = "flight-search-area" style="width : 1000px; height : 500px;">
-          <div style="display: flex; flex-direction :row; justify-content:space-between;">
-            <div style="display: flex; flex-direction :row;">
-              <div style="padding-left : 10px;color : rgba(255,255,255)">왕복</div>
-              <div style="color :rgba(255,255,255) ;margin-left: 30px;">편도</div>
-            </div>
-            <div style="display: flex; flex-direction :row;">
-              <div style="color : rgba(255,255,255);margin-right : 10px">항공권 예약내역</div>
-            </div>
+        <div style="display: flex; flex-direction : row; text-align:center; justify-content:center; font-size :20px; color : white; border-bottom : solid 1px rgba(167, 166, 166, 0.25); ">
+          <div style="display: flex; flex-direction : row; width : 1400px; justify-content : left; padding-top : 15px; padding-bottom : 15px;">
+            <div>항공</div>
+            <div style="padding-left :20px;">숙소</div>
+            <div style="padding-left :20px;">렌터카</div>
+            <div style="padding-left :20px;">투어</div>
+            <div style="padding-left :20px;">할인혜택</div>
           </div>
-          <div style="padding-top : 30px; display: flex; flex-direction :row; justify-content:space-between;">
-            <div style="display: flex; flex-direction :row;">
-              <div style="width: 462px; display:flex; flex-direction :row">
-                <input style = "padding : 7px 7px; width:200px" placeholder="출발">
-                <div style="justify-content:center; text-align :center;">
-                  <button style="padding-top : 10px; border :0; background-color:transparent; color:black; font-size: 20px;" class="material-icons">sync_alt</button>
-                </div>
-                <input style = "padding : 7px 7px; width:200px" placeholder="도착">
+        </div>
+        <div style="display: flex; flex-direction :row; text-align:center; justify-content:center;">
+          <div class = "flight-search-area" style="width : 1400px; height : 400px; min-width:1060px; padding-top : 50px">
+            <div style="display: flex; flex-direction :row; justify-content:space-between;">
+              <div style="display: flex; flex-direction :row; padding-bottom : 15px;">
+                <div style="padding-left : 10px;color : rgba(255,255,255)">왕복</div>
+                <div style="color :rgba(255,255,255) ;margin-left: 30px;">편도</div>
               </div>
-              <div style="padding-left: 10px; width: 302px; display:flex; flex-direction : row">
-                <input style = "padding : 7px 7px; width:106px"  placeholder="가는 날">
-                <div>
-                  <span class = "material-icons" style = "padding : 10px 5px 0px 5px; font-size : 20px; color :black">trending_flat</span>
-                </div>
-                <input style = "padding : 7px 7px;width:106px" placeholder="오는 날">
-              </div>
-              <div style="padding-left: 10px; width :280px">
-                <input style = "padding : 7px 7px;"placeholder="승객 1명, 일반석">
+              <div style="display: flex; flex-direction :row;">
+                <div style="color : rgba(255,255,255);margin-right : 20px">항공권 예약내역</div>
               </div>
             </div>
-          </div>
-          <div style="display: flex; flex-direction : row; justify-content:space-between; padding-top :30px">
-            <div></div>
-            <button style="border: 0; background-color :rgb(105, 150, 235); padding : 13px 13px; border-radius :20px; color :white">
-              항공권 검색
-            </button>
+            <div style="padding-top : 30px; display: flex; flex-direction :row; justify-content:space-between;">
+              <div style="display: flex; flex-direction :row; padding-bottom :15px;">
+                <div style="padding-left:7px; width: 550px; display:flex; flex-direction :row;">
+                  <input style = "padding : 10px 10px; width:250px" placeholder="출발">
+                  <div style="justify-content:center; text-align :center;">
+                    <button style="padding-top : 10px; border :0; background-color:transparent; color:black; font-size: 30px;" class="material-icons">sync_alt</button>
+                  </div>
+                  <input style = "padding : 10px 10px; width:250px" placeholder="도착">
+                </div>
+                <div style="padding-left: 70px; width: 450px; display:flex; flex-direction : row">
+                  <input style = "padding : 10px 10px; width:200px"  placeholder="가는 날">
+                  <div>
+                    <span class = "material-icons" style = "padding : 10px 5px 0px 5px; font-size : 30px; color :black">trending_flat</span>
+                  </div>
+                  <input style = "padding : 10px 10px; width:200px" placeholder="오는 날">
+                </div>
+                <div style="padding-left: 10px; width :450px">
+                  <input style = "padding : 10px 10px;"placeholder="승객 1명, 일반석">
+                </div>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction : row; justify-content:space-between; padding-top :30px;">
+              <div></div>
+              <button style="border: 0; background-color :rgb(105, 150, 235);margin-right :10px; padding : 13px 13px; border-radius :20px; color :white;">
+                항공권 검색
+              </button>
+            </div>
           </div>
         </div>
       </div>
+
+
+      <div style="padding-top: 200px; width:1600px; height:800px">
+        <div class="slider-2">
+          <div class="side-btns">
+            <div><span><i class="fas fa-caret-left"></i></i></span></div>
+            <div><span><i class="fas fa-caret-right"></i></span></div>
+          </div>
+        
+        <div class="slides" >
+            <div class="active" style="background-image:url(https://d2ur7st6jjikze.cloudfront.net/cms/4880_original_1708491871.jpg?1708491871);"></div>
+            <div style="background-image:url(https://d2ur7st6jjikze.cloudfront.net/cms/4923_original_1710726900.jpg?1710726900);"></div>
+            <div style="background-image:url(https://d2ur7st6jjikze.cloudfront.net/cms/4918_original_1710726896.jpg?1710726896);"></div>
+            <div style="background-image:url(https://d2ur7st6jjikze.cloudfront.net/cms/4784_original_1710161533.jpg?1710161533);"></div>
+        </div>
+        
+        <div class="page-nav">
+            <div class="active"></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        </div>
+      </div>
     </div>
+
+    
     <!-- Optional JavaScript; choose one of the two! -->
     <script>
+       $('.slider-2 .page-nav > div').click(function() {
+    
+        var $this = $(this);
+        var $pagenav = $this.parent()
+        var $current = $pagenav.find('.active');
+        
+        $current.removeClass('active');
+        $this.addClass('active');
+    
+        var index = $this.index();
+        var $슬라이더 = $this.closest('.slider-2');
+        
+        $슬라이더.find('.slides > div.active').removeClass('active');
+        $슬라이더.find('.slides > div').eq(index).addClass('active');
+        
+        
+      });
+    
+      $('.slider-2 > .side-btns > div:first-child').click(function() {
+          var $this = $(this);
+          var $slider = $this.closest('.slider-2');
+          
+          var $current = $slider.find('.page-nav > div.active');
+          var $post = $current.prev();
+          
+          if ( $post.length == 0 ) {
+              $post = $slider.find('.page-nav > div:last-child');
+          }
+          
+          $post.click();
+      });
+      
+      $('.slider-2 > .side-btns > div:last-child').click(function() {
+          var $this = $(this);
+          var $slider = $this.closest('.slider-2');
+          
+          var $current = $slider.find('.page-nav > div.active');
+          var $post = $current.next();
+          
+          if ( $post.length == 0 ) {
+              $post = $slider.find('.page-nav > div:first-child');
+          }
+          
+          $post.click();
+      });
+      setInterval(function(){
+        $('.slider-2 > .side-btns > div').eq(1).click();
+      }, 3000);
+
     </script>
 
     <!-- Option 1: Bootstrap Bundle with Popper -->

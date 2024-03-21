@@ -16,6 +16,11 @@
     <!-- jquery -->
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <link rel="shortcut icon" href="#">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    
     <!-- slide image -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
 
@@ -46,32 +51,31 @@
       .modal_overlay{
         width : 100%;
         height : 100%;
-        position : absolute;
+        position : fixed;
         left : 0;
         top : 0;
         display : none;
         flex-direction : column;
         align-items : center;
         justify-content : center;
-        background : rgba(0,0,0,0.8);
-        backdrop-filter : blur(1.5px);
-        -webkit-backdrop-fillter : blur(1.5px);
+        background-color: rgb(255,255,255, 0.4);
         z-index: 6;
       }
 
       .modal_window{
         background : white;
-        backdrop-filter : blur(13.5px);
-        -webkit-backdrop-fillter: blur(13.5px);
-        border-radius: 10px;
-        border : 1px solid rgba(255,255,255,0.18);
-        width : 800px;
-        height : 600px;
-        position : relative;
-        padding : 10px;
+        border-radius: 40px;
+        border : 1px solid rgba(255,255,255,0.4);
+        width : 600px;
+        height : 800px;
+        position : absolute;
+        padding : 30px;
+        overflow: hidden;
       }
+
+
       .modal {
-        display: none;
+        display: flex;
         z-index: 500;
         width: 100%;
         height: 100%;
@@ -80,6 +84,7 @@
         left: 0;
         background-color: rgba(0, 0, 0, 0.8);
       }
+      
       span img:hover{
           cursor: -webkit-zoom-in;
       }
@@ -221,6 +226,45 @@
       
       /* 슬라이드 버튼 끝 */ 
 
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .border_modal_overlay{
+        width : 100%;
+        height : 100%;
+        position : fixed;
+        left : 0;
+        top : 0;
+        display : none;
+        flex-direction : column;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(255,255,255, 0);
+        z-index: 6;
+      }
+
+      .counter_container {
+        background : rgb(255,255,255);
+        border-radius: 40px;
+        border : 1px solid rgba(221, 221, 221, 1);
+        width : 400px;
+        height : 360px;
+        position : absolute;
+        padding : 30px;
+        overflow: hidden;
+        display : flex;
+      }
+      .btn {
+        padding: 10px 20px;
+        font-size: 18px;
+        cursor: pointer;
+      }
+      #display {
+        font-size: 24px;
+        margin-top: 20px;
+      }
+
 
     </style>
   </head>
@@ -280,21 +324,17 @@
             <div style="padding-top : 30px; display: flex; flex-direction :row; justify-content:space-between;">
               <div style="display: flex; flex-direction :row; padding-bottom :15px;">
                 <div style="padding-left:7px; width: 550px; display:flex; flex-direction :row;">
-                  <input style = "padding : 10px 10px; width:250px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none" placeholder="출발">
+                  <input id = "departure" style = "padding : 10px 10px; width:250px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none" readonly="readonly" placeholder="출발">
                   <div style="justify-content:center; text-align :center;">
                     <button style="padding-top : 10px; border :0; background-color:transparent; color:black; font-size: 30px;" class="material-icons">sync_alt</button>
                   </div>
-                  <input style = "padding : 10px 10px; width:250px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none" placeholder="도착">
+                  <input id="arrival" style = "padding : 10px 10px; width:250px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none" readonly="readonly"  placeholder="도착">
                 </div>
                 <div style="padding-left: 70px; width: 450px; display:flex; flex-direction : row">
-                  <input style = "padding : 10px 10px; width:200px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none"  placeholder="가는 날">
-                  <div>
-                    <span class = "material-icons" style = "padding : 10px 5px 0px 5px; font-size : 30px; color :black">trending_flat</span>
-                  </div>
-                  <input style = "padding : 10px 10px; width:200px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none" placeholder="오는 날">
+                  <input name="datepicker" type="text"  style = "padding : 10px 10px; width:400px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none" readonly="readonly" value="" placeholder="가는 날                    -         오는 날">
                 </div>
                 <div style="padding-left: 10px; width :450px">
-                  <input style = "padding : 10px 10px; border-radius: 10px; border-color :rgba(255,255,255,0); ;outline:none"placeholder="승객 1명, 일반석">
+                  <input id = "select_border" style = "padding : 10px 10px; border-radius: 10px; border-color :rgba(255,255,255,0); ;outline:none;" readonly="readonly"  value="승객 1명, 일반석">
                 </div>
               </div>
             </div>
@@ -333,10 +373,276 @@
       </div>
     </div>
 
+
+    <!-- 출발 도시 모달창 -->
+    <div id = "departure_modal" class = "modal_overlay">
+      <div class = "modal_window">
+        <div style="display :flex; flex-direction : row; justify-content :space-between;">
+          <div style="font-weight: bold; font-size:20px">도시선택</div>
+          <span class="modal-close material-symbols-outlined" style="cursor: pointer; color:gray">close</span>
+        </div>
+        <div style="display: flex; flex-direction : row; justify-content :space-between">
+          <input placeholder="도시명을 입력하세요">
+          <button>검색</button>
+        </div>
+        <div>주요도시 바로 선택</div>
+        <table>
+          <tbody>
+            <tr>
+              <th scope="row" rowspan="2">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" style="display: none;">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" rowspan="2">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" style="display: none;">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" rowspan="2">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" style="display: none;">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
     
+    <!-- 도착 도시 모달창 -->
+    <div id = "arrival_modal" class = "modal_overlay">
+      <div class = "modal_window">
+        <div style="display :flex; flex-direction : row; justify-content :space-between;">
+          <div style="font-weight: bold; font-size:20px">도시선택</div>
+          <span class="modal-close material-symbols-outlined" style="cursor: pointer; color:gray">close</span>
+        </div>
+        <div style="display: flex; flex-direction : row; justify-content :space-between">
+          <input placeholder="도시명을 입력하세요">
+          <button>검색</button>
+        </div>
+        <div>주요도시 바로 선택</div>
+        <table>
+          <tbody>
+            <tr>
+              <th scope="row" rowspan="2">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" style="display: none;">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" rowspan="2">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" style="display: none;">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" rowspan="2">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+            <tr>
+              <th scope="row" style="display: none;">국내</th>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+              <td>서울</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 인원 좌석 선택 창 -->
+    <div id = "select_border_modal" class ="border_modal_overlay">
+      <div class="counter_container" >
+        <div style="display: flex; flex-direction :column; width :400px">
+          <div style="display: flex; flex-direction : row; justify-content:space-between">
+            <div style="padding-bottom:20px; font-weight :bold; font-size :25px">
+              인원 & 좌석 등급
+            </div>
+            <span class="modal-close material-symbols-outlined" style="cursor: pointer; color:gray">close</span>
+          </div>
+          <div style="padding-bottom:  20px; font-weight :bold">
+            나이는 탑승일 기준으로 선택해주세요.
+          </div>
+          <div>
+            <dl style="display: flex; flex-direction :row; justify-content:space-between; align-items :center">
+              <dt style="font-size: large;">
+                성인
+                <span style="font-size :medium; color :gray; ">만 12세 이상</span>
+              </dt>
+              <dd>
+                <button class="btn" onclick="adult_decrease()">-</button>
+                <span id="adult">1</span>
+                <button class="btn" onclick="adult_increase()">+</button>
+              </dd>
+          </div>
+          <div>
+            <dl style="display: flex; flex-direction :row; justify-content:space-between; align-items :center">
+              <dt style="font-size: large;">
+                소아
+                <span style="font-size :medium; color :gray; ">만 12세 미만</span>
+              </dt>
+              <dd>
+                <button class="btn" onclick="child_decrease()">-</button>
+                <span id="child">0</span>
+                <button class="btn" onclick="child_increase()">+</button>
+              </dd>
+          </div>
+          <div>
+            <dl style="display: flex; flex-direction :row; justify-content:space-between; align-items :center">
+              <dt style="font-size: large;">
+                유아
+                <span style="font-size :medium; color :gray; ">24개월 미만</span>
+              </dt>
+              <dd>
+                <button class="btn" onclick="infant_decrease()">-</button>
+                <span id="infant">0</span>
+                <button class="btn" onclick="infant_increase()">+</button>
+              </dd>
+          </div>
+        </div>
+      </div>
+    </div>
     <!-- Optional JavaScript; choose one of the two! -->
     <script>
-       $('.slider-2 .page-nav > div').click(function() {
+
+      // 카운터
+      
+      var audlt_count = 1;
+      var child_count = 0;
+      var infant_count = 0;
+  
+      function adult_increase() {
+        audlt_count++;
+        document.getElementById("adult").textContent = audlt_count;
+        $("input#select_border").attr("value", "승객" + " " + (parseInt(document.getElementById('adult').textContent)
+        + parseInt(document.getElementById('child').textContent)
+        + parseInt(document.getElementById('infant').textContent)+ "명" + ","+ " 일반석"))
+      }
+      
+      function adult_decrease() {
+        if (audlt_count > 1) {
+          audlt_count--;
+          document.getElementById("adult").textContent = audlt_count;
+          $("input#select_border").attr("value", "승객" + " " + (parseInt(document.getElementById('adult').textContent)
+          + parseInt(document.getElementById('child').textContent)
+          + parseInt(document.getElementById('infant').textContent)+ "명" + ","+ " 일반석"))
+        }
+      }
+
+      function child_increase() {
+        child_count++;
+        document.getElementById("child").textContent = child_count;
+        $("input#select_border").attr("value", "승객" + " " + (parseInt(document.getElementById('adult').textContent)
+        + parseInt(document.getElementById('child').textContent)
+        + parseInt(document.getElementById('infant').textContent)+ "명" + ","+ " 일반석"))
+      }
+      
+      function child_decrease() {
+        if (child_count > 0) {
+          child_count--;
+          document.getElementById("child").textContent = child_count;
+          $("input#select_border").attr("value", "승객" + " " + (parseInt(document.getElementById('adult').textContent)
+          + parseInt(document.getElementById('child').textContent)
+          + parseInt(document.getElementById('infant').textContent)+ "명" + ","+ " 일반석"))
+        }
+      }function infant_increase() {
+        infant_count++;
+        document.getElementById("infant").textContent = infant_count;
+        $("input#select_border").attr("value", "승객" + " " + (parseInt(document.getElementById('adult').textContent)
+        + parseInt(document.getElementById('child').textContent)
+        + parseInt(document.getElementById('infant').textContent)+ "명" + ","+ " 일반석"))
+      }
+      
+      function infant_decrease() {
+        if (infant_count > 0) {
+          infant_count--;
+          document.getElementById("infant").textContent = infant_count;
+          $("input#select_border").attr("value", "승객" + " " + (parseInt(document.getElementById('adult').textContent)
+          + parseInt(document.getElementById('child').textContent)
+          + parseInt(document.getElementById('infant').textContent)+ "명" + ","+ " 일반석"))
+        }
+      }
+
+      //모달창
+
+      $('#select_border').click(function(){
+        $('#select_border_modal').css(
+          'display','flex');
+      });
+
+      $('#departure').click(function(){
+        $('#departure_modal').css(
+          'display','flex').hide().fadeIn();
+      });
+
+      $('.modal-close').click(function(){
+        $('#departure_modal').fadeOut();
+        });
+
+      $('#arrival').click(function(){
+        $('#arrival_modal').css(
+          'display','flex').hide().fadeIn();
+      });
+
+      $('.modal-close').click(function(){
+        $('#arrival_modal').fadeOut();
+        });
+
+        $('.modal-close').click(function(){
+          $('#select_border_modal').css('display','none');
+          });
+      
+
+      // 광고 슬라이드
+      $('.slider-2 .page-nav > div').click(function() {
     
         var $this = $(this);
         var $pagenav = $this.parent()
@@ -384,6 +690,37 @@
       setInterval(function(){
         $('.slider-2 > .side-btns > div').eq(1).click();
       }, 3000);
+
+      // 날짜 설정
+      $(function () {
+        $('input[name="datepicker"]').daterangepicker({
+            "locale": {
+                "format": "YYYY-MM-DD",
+                "separator": " ~ ",
+                "applyLabel": "확인",
+                "cancelLabel": "취소",
+                "fromLabel": "From",
+                "toLabel": "To",
+                "customRangeLabel": "Custom",
+                "weekLabel": "W",
+                "daysOfWeek": ["월", "화", "수", "목", "금", "토", "일"],
+                "monthNames": ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+                "firstDay": 1,
+            },
+            "drops": "down",
+            autoUpdateInput: false,
+            startDate: $('input[name="startDate"]').val(),
+            endDate: $('input[name="endDate"]').val(),
+        });
+        $('input[name="datepicker"]').on('apply.daterangepicker', function(ev, picker) {
+          $(this).val(picker.startDate.format('YYYY-MM-DD') + '               -       ' + picker.endDate.format('YYYY-MM-DD'));
+          console.log(picker.startDate.format('YYYY-MM-DD') + '   and   ' + picker.endDate.format('YYYY-MM-DD'));
+        });
+    
+        $('input[name="datepicker"]').on('cancel.daterangepicker', function(ev, picker) {
+          $(this).val('');
+        });
+      });
 
     </script>
 

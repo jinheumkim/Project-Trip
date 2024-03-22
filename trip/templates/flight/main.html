@@ -370,7 +370,7 @@
                   <input id="arrival" style = "padding : 10px 10px; width:250px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none" readonly="readonly"  placeholder="도착">
                 </div>
                 <div style="padding-left: 100px; width: 500px; display:flex; flex-direction : row">
-                  <input name="datepicker" type="text"  style = "padding : 10px 10px; width:400px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none" readonly="readonly" value="" placeholder="가는 날                    -         오는 날">
+                  <input name="datepicker" type="text"  style = "padding : 10px 10px; width:400px; border-radius: 10px; border-color :rgba(255,255,255,0); outline:none" readonly="readonly" placeholder="가는 날                    -         오는 날">
                 </div>
                 <div style="padding-left: 50px; width:400px">
                   <input id = "select_border" style = "padding : 10px 10px; border-radius: 10px; border-color :rgba(255,255,255,0); ;outline:none;" readonly="readonly"  value="승객 1명, 일반석">
@@ -379,7 +379,7 @@
             </div>
             <div style="display: flex; flex-direction : row; justify-content:space-between; padding-top :30px;">
               <div></div>
-              <button style="border: 0; background-color :rgb(105, 150, 235);margin-right :10px; padding : 13px 13px; border-radius :20px; color :white;">
+              <button id = "search_flight" style="border: 0; background-color :rgb(105, 150, 235);margin-right :10px; padding : 13px 13px; border-radius :20px; color :white;">
                 항공권 검색
               </button>
             </div>
@@ -665,6 +665,42 @@
 
     <!-- Optional JavaScript; choose one of the two! -->
     <script>
+      // 항공권 검색
+
+      $(document).ready(function() {
+        $('#search_flight').click(function() {
+          var departure = document.getElementById("departure").value;
+          var arrival = document.getElementById("arrival").value;
+          array = ($('input[name="datepicker"]').val().replace(/(\s*)/g, "").split("~"))
+          border_count = ($('#select_border').val().replace("승객","").trim().split("명"))[0]
+          var startDate = array[0]
+          var endDate = array[1]
+
+
+            $.ajax({
+                url: '/flight/search',
+                type: 'GET',
+                data: {
+                  departure : departure,
+                  arrival : arrival,
+                  startDate : startDate,
+                  endDate : endDate,
+                  border_count : border_count
+                },
+                success : function (data){
+                  console.log("성공");
+                },
+                error : function (request, status, error){
+                  console.log("에러");
+                },
+                complete : function(){
+                  console.log("완료");
+                }
+            });
+        });
+      });
+
+
       // 출발, 도착도시 모달
       $("#departure_modal").on("click", "td", function (e) {
         let td = e.currentTarget.textContent;
@@ -693,7 +729,7 @@
       var child_count = 0;
       var infant_count = 0;
   
-      function adult_increase() {
+      function adult_increase() { 
         audlt_count++;
         document.getElementById("adult").textContent = audlt_count;
         $("input#select_border").attr("value", "승객" + " " + (parseInt(document.getElementById('adult').textContent)
@@ -848,8 +884,7 @@
             minDate: new Date(),
         });
         $('input[name="datepicker"]').on('apply.daterangepicker', function(ev, picker) {
-          $(this).val(picker.startDate.format('YYYY-MM-DD') + '               -       ' + picker.endDate.format('YYYY-MM-DD'));
-          console.log(picker.startDate.format('YYYY-MM-DD') + '   and   ' + picker.endDate.format('YYYY-MM-DD'));
+          $(this).val(picker.startDate.format('YYYY-MM-DD') + '               ~       ' + picker.endDate.format('YYYY-MM-DD'));
         });
     
         $('input[name="datepicker"]').on('cancel.daterangepicker', function(ev, picker) {

@@ -429,7 +429,7 @@
           <tbody>
             <tr>
               <th scope="row" rowspan="2">국내</th>
-              <td>서울</td>
+              <td>인천</td>
               <td>김포</td>
               <td>제주</td>
               <td>부산</td>
@@ -526,7 +526,7 @@
           <tbody>
             <tr>
               <th scope="row" rowspan="2">국내</th>
-              <td>서울</td>
+              <td>인천</td>
               <td>김포</td>
               <td>제주</td>
               <td>부산</td>
@@ -669,26 +669,27 @@
 
       $(document).ready(function() {
         $('#search_flight').click(function() {
-          var departure = document.getElementById("departure").value;
-          var arrival = document.getElementById("arrival").value;
+          var departure_airport = document.getElementById("departure").value;
+          var arrival_airport = document.getElementById("arrival").value;
           array = ($('input[name="datepicker"]').val().replace(/(\s*)/g, "").split("~"))
-          border_count = ($('#select_border').val().replace("승객","").trim().split("명"))[0]
-          var startDate = array[0]
-          var endDate = array[1]
+          var border_count = ($('#select_border').val().replace("승객","").trim().split("명"))[0]
+          var departure_date = array[0]
+          var arrival_date = array[1]
 
 
             $.ajax({
                 url: '/flight/search',
-                type: 'GET',
+                type: 'Get',
                 data: {
-                  departure : departure,
-                  arrival : arrival,
-                  startDate : startDate,
-                  endDate : endDate,
-                  border_count : border_count
+                  key1: departure_airport,
+                  key2 : arrival_airport,
+                  key3 : departure_date,
+                  key4 : arrival_date,
+                  key5 : border_count,
                 },
                 success : function (data){
                   console.log("성공");
+                  window.location.href = '/flight/search/?key1=' + departure_airport + '&key2=' + arrival_airport + '&key3=' + departure_date + '&key4=' +  arrival_date + '&key5='+ border_count; 
                 },
                 error : function (request, status, error){
                   console.log("에러");

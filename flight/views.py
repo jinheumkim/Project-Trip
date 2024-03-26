@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from user.models import User
-from flight.models import FlightSchedule, Airport
+from flight.models import FlightSchedule, Airport, Airline
 from trip.settings import MEDIA_ROOT
 
 
@@ -40,22 +40,42 @@ class Search(APIView):
         arrival_date = request.GET.get('key4')
         border_count = request.GET.get('key5')
         
-        flight_search_object = FlightSchedule.objects.all()
-        flight_search = []
-        for search in flight_search_object:
-            print(search)
+        departure_airport_id = Airport.objects.filter(name__icontains=departure_airport).first()
+        arrival_airport_id = Airport.objects.filter(name__icontains=arrival_airport).first()
+        
+        departure_list = []
+        arrival_list = []
+        
+        departure = FlightSchedule.objects.filter(departure_airport = departure_airport_id.id, departure_date = departure_date)
+        arrival = FlightSchedule.objects.filter(arrival_airport = arrival_airport_id.id, arrival_date = arrival_date)
+        
+        
+        for search in departure:
+            departure_list.append(dict(departure_airport = search.departure_airport,
+                                       departure_date = search.departure_date,
+                                       arrival_airport = search.arrival_airport,
+                                       arrival_date = search.arrival_date,
+                                       airline = search.airline,
+                                       flight_code = search.flight_code,
+                                       departure_time = search.departure_time,
+                                       arrival_time = search.arrival_time,
+                                       departure_airport_code = departure_airport_id.code,
+                                       arrival_airport_code = arrival_airport_id.code,
+                                       ))
             
-        if departure_airport:
-            departure_airport = Airport.objects.filter(name__icontains=departure_airport)
-        if arrival_airport:
-            arrival_airport = Airport.objects.filter(name__icontains=arrival_airport)
-        if departure_date:
-            departure_date = FlightSchedule.objects.filter(departure_date__icontains=departure_date)
-            print(departure_date)
-        if arrival_date:
-            arrival_date = FlightSchedule.objects.filter(arrival_date__icontains=arrival_date)
-        
-        
-    
+        for search in arrival:
+            arrival_list.append(dict(departure_airport = search.departure_airport,
+                                       departure_date = search.departure_date,
+                                       arrival_airport = search.arrival_airport,
+                                       arrival_date = search.arrival_date,
+                                       airline = search.airline,
+                                       flight_code = search.flight_code,
+                                       departure_time = search.departure_time,
+                                       arrival_time = search.arrival_time,
+                                       departure_airport_code = departure_airport_id.code,
+                                       arrival_airport_code = arrival_airport_id.code,))
+            
         return render(request, "flight/search.html", context = dict(user=user, email=email,
+                                                                    user_login = user_login,
+                                                                    departure = departure_list
                                                                     ))

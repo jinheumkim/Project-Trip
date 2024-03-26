@@ -305,25 +305,27 @@
                 <option value="출발 시간 느린 순">출발 시간 느린 순</option>
               </select>
           </div>
-
+          {% for search in departure %}
             <div class="flight_box" style="margin-top :20px; margin-bottom :20px">
               <div style="display: flex; flex-direction :row; justify-content:space-between; align-items:center;">
-                <div style="display: flex; flex-direction :row;">
-                  <div class="profile box" style="width:50px; height:50px; background-color:#fff;margin-right :10px"></div>
+                <div style="display: flex; flex-direction :row; align-items :center">
+                  <div class = "box" style = "width : 50px; height : 50px; margin : 10px;">
+                    <img class = "profile" src = "{% get_media_prefix %}{{ search.airline.image}}">
+                  </div>
                   <div style="display: flex; flex-direction :column; text-align:center; font-size:15px;">
-                    <div>에어서울</div>
-                    <div>jy777</div>
+                    <div>{{ search.airline.name }}</div>
+                    <div>{{ search.flight_code }}</div>
                   </div>
                 </div>
                 <div style="display: flex; width:200px; font-weight :bold">
                   <div style="display: flex; flex-direction :column; text-align:center;">
-                    <div>07:50</div>
-                    <div>GMP</div>
+                    <div>{{ search.departure_time }}</div>
+                    <div>{{ search.departure_airport_code }}</div>
                   </div>
-                  <span class="material-icons" style="padding-right: 50px; padding-left:50px">trending_flat</span>
+                  <span class="material-icons" style="padding-right: 50px; padding-left:50px; padding-top :24px">trending_flat</span>
                   <div style="display: flex; flex-direction :column; text-align:center;">
-                    <div>10:50</div>
-                    <div>GMP</div>
+                    <div>{{ search.arrival_time }}</div>
+                    <div>{{ search.arrival_airport_code }}</div>
                   </div>
                 </div>
                 <div>특가석</div>
@@ -332,6 +334,7 @@
                 <button class="button">선택</button>
               </div>
             </div>
+          {% endfor %}
         </div>
       </div>
 

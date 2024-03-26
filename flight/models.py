@@ -4,11 +4,10 @@ from django.db import models
 
 class FlightSchedule(models.Model):
     flight_code = models.CharField(max_length = 45) ##항공편명
-    departure_date = models.DateField() ##출발 날짜
-    arrival_date = models.DateField() ##도착 날짜
+    departure_date = models.CharField(max_length = 10) ##출발 날짜
+    arrival_date = models.CharField(max_length = 10) ##도착 날짜
     departure_time = models.TimeField() ##출발 시각
     arrival_time = models.TimeField()  ##도착 시각
-    duration_time = models.TimeField()  ##비행 시간
     departure_airport = models.ForeignKey('Airport', related_name='departure_airport', on_delete=models.CASCADE) ##출발 공항
     arrival_airport = models.ForeignKey('Airport', related_name='arrival_airport', on_delete=models.CASCADE) ##도착 공항
     airline = models.ForeignKey('Airline', on_delete=models.CASCADE) ##항공사

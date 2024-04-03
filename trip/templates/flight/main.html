@@ -676,9 +676,26 @@
           var departure_date = array[0]
           var arrival_date = array[1]
 
+          $.ajax({
+            type: 'POST',
+            url: '/flight/search_data/', // 데이터를 저장할 DRF API URL
+            data: {departure_airport : departure_airport,
+                  arrival_airport : arrival_airport,
+                  border_count : border_count,
+                  departure_date : departure_date,
+                  arrival_date : arrival_date},
+            success: function(response) {
+                // 데이터가 성공적으로 저장되면 새로운 검색 창으로 이동
+                window.location.href = '/flight/search/'; // 검색 페이지로 이동할 URL
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(errmsg);
+            }
+          });
 
-            $.ajax({
-                url: '/flight/search',
+
+            /*$.ajax({
+                url: '/flight/search/',
                 type: 'Post',
                 data: {
                   key1: departure_airport,
@@ -697,7 +714,7 @@
                 complete : function(){
                   console.log("완료");
                 }
-            });
+            });*/
         });
       });
 

@@ -30,7 +30,7 @@ class Airport(models.Model): ##공항
         db_table = 'airports'
         
 class FlightPrice(models.Model): 
-    price           = models.DecimalField(max_digits=30, decimal_places=2) ##가격
+    price           = models.IntegerField() ##가격
     remaining_seat  = models.IntegerField() ## 남은 좌석
     flight_schedule = models.ForeignKey('FlightSchedule', on_delete=models.CASCADE, related_name='flight_prices') ##항공 스케쥴 아이디
     status          = models.ForeignKey('FlightStatus', on_delete=models.CASCADE, default=1)  ## 상태

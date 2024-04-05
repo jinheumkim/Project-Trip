@@ -692,29 +692,6 @@
                 console.log(errmsg);
             }
           });
-
-
-            /*$.ajax({
-                url: '/flight/search/',
-                type: 'Post',
-                data: {
-                  key1: departure_airport,
-                  key2 : arrival_airport,
-                  key3 : departure_date,
-                  key4 : arrival_date,
-                  key5 : border_count,
-                },
-                success : function (data){
-                  console.log("성공");
-                  window.location.href = '/flight/search/?key1=' + departure_airport + '&key2=' + arrival_airport + '&key3=' + departure_date + '&key4=' +  arrival_date + '&key5='+ border_count; 
-                },
-                error : function (request, status, error){
-                  console.log("에러");
-                },
-                complete : function(){
-                  console.log("완료");
-                }
-            });*/
         });
       });
 

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'flight',
     'trip',
     'user',
+    'django.contrib.humanize'
 ]
 
 MIDDLEWARE = [

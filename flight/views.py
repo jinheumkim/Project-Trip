@@ -50,25 +50,27 @@ class Search(APIView):
         arrival_date =  request.session.get('arrival_date',None)
         departure_flight_code = request.session.get('departure_flight_code', None)
         selectedValue = request.session.get('selectedValue',None)
+        check_item = request.session.get('check_item',None)
+            
         
-        print(selectedValue)
         
         if selectedValue is None:
             departure_dates = FlightSchedule.objects.filter(departure_date__icontains = departure_date).order_by('flight_prices__price')
             arrival_dates = FlightSchedule.objects.filter(arrival_date__icontains = arrival_date).order_by('flight_prices__price')
-        
+                
         elif selectedValue == "price":
             departure_dates = FlightSchedule.objects.filter(departure_date__icontains = departure_date).order_by('flight_prices__price')
             arrival_dates = FlightSchedule.objects.filter(arrival_date__icontains = arrival_date).order_by('flight_prices__price')
+
+        
             
         elif selectedValue == "time_asc":
             departure_dates = FlightSchedule.objects.filter(departure_date__icontains = departure_date).order_by('departure_time')
             arrival_dates = FlightSchedule.objects.filter(arrival_date__icontains = arrival_date).order_by('departure_time')
-        
+            
         elif selectedValue == "time_desc":
             departure_dates = FlightSchedule.objects.filter(departure_date__icontains = departure_date).order_by('-departure_time')
             arrival_dates = FlightSchedule.objects.filter(arrival_date__icontains = arrival_date).order_by('-departure_time')
-            
             
         
         
@@ -148,4 +150,11 @@ class sort_index(APIView):
     def post(self,request):
         selectedValue = request.data.get('selectedValue')
         request.session['selectedValue'] = selectedValue
+        return Response(status=200)
+    
+    
+class check_airline(APIView):
+    def post(self,request):
+        check_item = request.POST.getlist('check_item[]')
+        request.session['check_item'] = check_item
         return Response(status=200)

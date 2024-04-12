@@ -15,12 +15,16 @@ class FlightSchedule(models.Model):
     class Meta:
         db_table = 'flight_schedules'
         
+        
+        
 class Airline(models.Model): ##항공사 
     name = models.CharField(max_length = 300) 
     image = models.TextField()
     
     class Meta:
         db_table = 'airlines'
+        
+        
 
 class Airport(models.Model): ##공항
     name = models.CharField(max_length=400)
@@ -28,6 +32,8 @@ class Airport(models.Model): ##공항
 
     class Meta:
         db_table = 'airports'
+        
+        
         
 class FlightPrice(models.Model): 
     price           = models.IntegerField() ##가격
@@ -38,8 +44,12 @@ class FlightPrice(models.Model):
     class Meta:
         db_table = 'flight_prices'
         
+        
+        
 class FlightStatus(models.Model):  ## 상태
     name = models.CharField(max_length=200)
 
     class Meta:
         db_table = 'flight_statuses'
+        
+        

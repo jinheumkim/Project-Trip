@@ -46,6 +46,7 @@ class Search(APIView):
         user = User.objects.filter(email = email).first()
         user_login = User.objects.filter(email = email).exists()
         
+        
         departure_airport =  request.session.get('departure_airport',None)
         arrival_airport =  request.session.get('arrival_airport',None)
         border_count =  request.session.get('border_count',None)
@@ -185,7 +186,11 @@ class Sort_index(APIView):
 
 class Reservation_create(APIView):
     def get(self, request):
-        return render(request, 'flight/reservation.html', context = dict())
+        email = request.session.get('email',None)
+                    
+        user = User.objects.filter(email = email).first()
+        user_login = User.objects.filter(email = email).exists()
+        return render(request, 'flight/reservation.html', context = dict(user = user, user_login = user_login))
         
     def post(self, request):
         email = request.session.get('email',None)

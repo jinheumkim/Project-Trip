@@ -19,6 +19,8 @@ Python, Django, Jquery, css
 ### ERD
 -------------------
 
+![trip erd](https://github.com/jinheumkim/Project-Trip/assets/126999253/5807ec4e-8254-45cf-ab30-a8fa28cf2d1e)
+
 
 ### 구현 기능
 --------------------

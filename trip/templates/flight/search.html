@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% load static %}
     {% load humanize %}
+    {% load mathfilters %}
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -317,8 +318,11 @@
                     <div>{{ select.arrival_airport_code }}</div>
                   </div>
                 </div>
-                <div>특가석</div>
-                <div>3석</div>
+                <div>일반석</div>
+                <div style="display: flex; flex-direction :column; align-items: center;">
+                  <div><b>잔여석</b></div>
+                  <div>{{ select.remaining_seat }}석</div>
+                </div>
                 <div style='font-weight :bold; font-size :20px'>{{ select.price|intcomma }}원</div>
                 <button id = "remove" class='button'>항공편 변경</button>
               </div>
@@ -326,6 +330,8 @@
           </div>
         {% endfor %}
       {% endif %}
+
+      <!-- 도착 항공권 선택 시 선택 항공편 div -->
       {% if arrival_selecting %}
       {% for select in arrival_select%}
         <div id = "arrival_select_{{ select.id }}" style='padding-top :30px; display: flex; flex-direction :row; justify-content : center;width:1300px; height :auto; justify-content:center'>
@@ -350,8 +356,11 @@
                   <div>{{ select.arrival_airport_code }}</div>
                 </div>
               </div>
-              <div>특가석</div>
-              <div>3석</div>
+              <div>일반석</div>
+              <div style="display: flex; flex-direction :column; align-items: center;">
+                <div><b>잔여석</b></div>
+                <div>{{ select.remaining_seat }}석</div>
+              </div>
               <div style='font-weight :bold; font-size :20px'>{{ select.price|intcomma }}원</div>
               <button id = "arrival_remove" arrival_select_id = {{select.id}} class='button'>항공편 변경</button>
             </div>
@@ -360,6 +369,7 @@
       {% endfor %}
     {% endif %}
 
+    <!-- 출발, 도착도시 모두 선택 시  -->
     {% if arrival_selecting and departure_selecting %}
      {% for select in arrival_select %}
      {% for selected in departure_select %}
@@ -380,11 +390,11 @@
           <div id = "reservation_arrival_code" style="width : 220px; padding-left :30px">{{select.flight_code}}</div>
           <div style="width : 220px;padding-left :30px">0원</div>
           <div id = "reservation_border_count" style="width : 250px;padding-left :5px">{{border_count}}명</div>
-          <div id = "total_price"><b>{% with total_price=select.price|add:selected.price %}{{ total_price|intcomma }}{% endwith %}원</b></div>
+          <div id = "total_price"><b>{% with total_price=select.price|add:selected.price|mul:border_count %}{{ total_price|intcomma }}{% endwith %}원</b></div>
         </div>
         <div style='display: flex; flex-direction :row; align-items:center; padding-top :20px;'>
           <div style="padding-right :900px; font-size :large; font-weight :bold">총 예상요금</div>
-          <div style="font-size : 25px; font-weight :bold; padding-right :10px">{% with total_price=select.price|add:selected.price %}{{ total_price|intcomma }}{% endwith %}원</div>
+          <div style="font-size : 25px; font-weight :bold; padding-right :10px">{% with total_price=select.price|add:selected.price|mul:border_count %}{{ total_price|intcomma }}{% endwith %}원</div>
           <button id = "reservation" arrival_select_id = {{select.id}} class='button' >예약 하기</button>
         </div>
       </div>
@@ -479,7 +489,7 @@
         </div>
 
 
-      <!-- 출발 항공권 선택 -->
+      <!-- 출발 항공권 선택시 검색 결과 창 -->
       {% if departure_selecting %}
         <div style="display: flex; flex-direction :column; width:800px">
             <div style="display: flex; flex-direction :row; align-items :center; justify-content:space-between">
@@ -527,7 +537,8 @@
               </div>
             </div>
       {%endif%}
-
+      
+      <!-- 출발 항공권 선택 시 도착 항공권 검색 -->
       {% if departure_selecting %}
         {% for arrival in arrivals %}
           <div id = "arrival_{{arrival.id}}"class="flight_box" style="margin-top :20px; margin-bottom :20px">
@@ -544,22 +555,26 @@
               <div style="display: flex; width:200px; font-weight :bold">
                 <div style="display: flex; flex-direction :column; text-align:center;">
                   <div id ='departure_time' >{{ arrival.departure_time }}</div>
-                  <div id ='departure_airport_code'>{{ arrival.arrival_airport.code }}</div>
+                  <div id ='departure_airport_code'>{{ arrival.departure_airport.code }}</div>
                 </div>
                 <span class="material-icons" style="padding-right: 50px; padding-left:50px; padding-top :24px">trending_flat</span>
                 <div style="display: flex; flex-direction :column; text-align:center;">
                   <div id = 'departure_arrival_time'>{{ arrival.arrival_time }}</div>
-                  <div id = 'departure_arrival_airport_code'>{{ arrival.departure_airport.code }}</div>
+                  <div id = 'arrival_airport_code'>{{ arrival.arrival_airport.code }}</div>
                 </div>
               </div>
-              <div>특가석</div>
-              <div>3석</div>
+              <div>일반석</div>
+              <div style="display: flex; flex-direction :column; align-items: center;">
+                <div><b>잔여석</b></div>
+                <div>{{ arrival.remaining_seat }}석</div>
+              </div>
               <div style="font-weight :bold; font-size :20px">{{arrival.price|intcomma}}원</div>
               <button arrival_id = "{{arrival.id}}" class="select_arrival_flight button">선택</button>
             </div>
           </div>
         {% endfor %}
       {% else %}
+      <!-- 출발 항공권 선택 -->
         {% for departure in departures %}
           <div id = "departure_{{departure.id}}" class="flight_box" style="margin-top :20px; margin-bottom :20px">
             <div style="display: flex; flex-direction :row; justify-content:space-between; align-items:center;">
@@ -580,11 +595,14 @@
                 <span class="material-icons" style="padding-right: 50px; padding-left:50px; padding-top :24px">trending_flat</span>
                 <div style="display: flex; flex-direction :column; text-align:center;">
                   <div id = 'departure_arrival_time'>{{ departure.arrival_time }}</div>
-                  <div id = 'departure_arrival_airport_code'>{{ departure.arrival_airport.code }}</div>
+                  <div id = 'arrival_airport_code'>{{ departure.arrival_airport.code }}</div>
                 </div>
               </div>
-              <div>특가석</div>
-              <div>3석</div>
+              <div>일반석</div>
+              <div style="display: flex; flex-direction :column; align-items: center;">
+                <div><b>잔여석</b></div>
+                <div>{{ departure.remaining_seat }}석</div>
+              </div>
               <div style="font-weight :bold; font-size :20px">{{departure.price|intcomma}}원</div>
               <button departure_id = "{{departure.id}}" class="select_departure_flight button">선택</button>
             </div>
@@ -592,7 +610,6 @@
         {% endfor %}
       {% endif %}
         </div>
-        </div> 
 
     <!-- 출발 도시 모달창 -->
     <div id = "departure_modal" class = "modal_overlay">
@@ -610,7 +627,7 @@
           <tbody>
             <tr>
               <th scope="row" rowspan="2">국내</th>
-              <td>서울</td>
+              <td>인천</td>
               <td>김포</td>
               <td>제주</td>
               <td>부산</td>
@@ -1020,33 +1037,44 @@
         $('#reservation_div').remove()
     });
 
-      $(document).ready(function() {
-        $('#search_flight').click(function() {
-          var departure_airport = document.getElementById("departure").value;
-          var arrival_airport = document.getElementById("arrival").value;
-          array = ($('input[name="datepicker"]').val().replace(/(\s*)/g, "").split("~"))
-          var border_count = ($('#select_border').val().replace("승객","").trim().split("명"))[0]
-          var departure_date = array[0]
-          var arrival_date = array[1]
+    $('#search_flight').click(function(event) {
+      var departure_airport = document.getElementById("departure").value;
+      var arrival_airport = document.getElementById("arrival").value;
+      array = ($('input[name="datepicker"]').val().replace(/(\s*)/g, "").split("~"))
+      var border_count = ($('#select_border').val().replace("승객","").trim().split("명"))[0]
+      var departure_date = array[0]
+      var arrival_date = array[1]
+      if (departure_airport.trim() == ""){
+        alert("출발도시를 선택하세요.");
+        event.stopPropagation();
+      }
+      if (departure_airport != "" && arrival_airport.trim() == ""){
+        alert("도착도시를 선택하세요.");
+        event.stopPropagation();
+      }
+      if (departure_airport != "" && arrival_airport != "" && departure_date.trim() == ""){
+        alert("날짜를 선택하세요.");
+        event.stopPropagation();
+      }
 
-          $.ajax({
-            type: 'POST',
-            url: '/flight/search_data/', // 데이터를 저장할 DRF API URL
-            data: {departure_airport : departure_airport,
-                  arrival_airport : arrival_airport,
-                  border_count : border_count,
-                  departure_date : departure_date,
-                  arrival_date : arrival_date},
-            success: function(response) {
-                // 데이터가 성공적으로 저장되면 새로운 검색 창으로 이동
-                window.location.href = '/flight/search/'; // 검색 페이지로 이동할 URL
-            },
-            error: function(xhr, errmsg, err) {
-                console.log(errmsg);
-            }
-          });
+      if (!event.isPropagationStopped()) {
+        $.ajax({
+          type: 'POST',
+          url: '/flight/search_data/', // 데이터를 저장할 DRF API URL
+          data: {departure_airport : departure_airport,
+                arrival_airport : arrival_airport,
+                border_count : border_count,
+                departure_date : departure_date,
+                arrival_date : arrival_date},
+          success: function(response) {
+              window.location.href = '/flight/search/'
+          },
+          error: function(xhr, errmsg, err) {
+              console.log(errmsg);
+          }
         });
-      });
+      }
+    });
 
 
         $('.select_arrival_flight').click(function(event){

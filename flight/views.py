@@ -2,9 +2,8 @@ from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from user.models import User, Reservation
-from flight.models import FlightSchedule, Airport, Airline, FlightPrice
+from flight.models import FlightSchedule, Airport, Airline, FlightPrice, FlightStatus
 from trip.settings import MEDIA_ROOT
-
 
 # Create your views here.
 
@@ -25,6 +24,7 @@ class SaveData(APIView):
         arrival_date = request.data.get('arrival_date')
         departure_flight_code = request.data.get('departure_flight_code')
         arrival_flight_code = request.data.get('arrival_flight_code')
+        
         
         
         
@@ -55,31 +55,42 @@ class Search(APIView):
         departure_flight_code = request.session.get('departure_flight_code', None)
         selectedValue = request.session.get('selectedValue',None)
         arrival_flight_code = request.session.get('arrival_flight_code',None)
-            
+        
+        
+        try:
+            departure_airport_id = Airport.objects.filter(name = departure_airport).first().id
+            arrival_airport_id = Airport.objects.filter(name = arrival_airport).first().id
+        except AttributeError :
+            return render(request, 'flight/search.html', context =dict(departure_airport = departure_airport,
+                                                                   arrival_airport = arrival_airport,
+                                                                   border_count = border_count,
+                                                                   departure_date = departure_date,
+                                                                   arrival_date = arrival_date,
+                                                                   user = user, user_login = user_login,
+                                                                   ) )
+        
+
         
         
         if selectedValue is None:
-            departure_dates = FlightSchedule.objects.filter(departure_date__icontains = departure_date).order_by('flight_prices__price')
-            arrival_dates = FlightSchedule.objects.filter(arrival_date__icontains = arrival_date).order_by('flight_prices__price')
+            departure_dates = FlightSchedule.objects.filter(departure_date = departure_date, departure_airport = departure_airport_id, arrival_airport = arrival_airport_id).order_by('flight_prices__price')
+            arrival_dates = FlightSchedule.objects.filter(arrival_date = arrival_date, departure_airport = arrival_airport_id, arrival_airport = departure_airport_id).order_by('flight_prices__price')
                 
         elif selectedValue == "price":
-            departure_dates = FlightSchedule.objects.filter(departure_date__icontains = departure_date).order_by('flight_prices__price')
-            arrival_dates = FlightSchedule.objects.filter(arrival_date__icontains = arrival_date).order_by('flight_prices__price')
-
-        
+            departure_dates = FlightSchedule.objects.filter(departure_date = departure_date, departure_airport = departure_airport_id, arrival_airport = arrival_airport_id).order_by('flight_prices__price')
+            arrival_dates = FlightSchedule.objects.filter(arrival_date = arrival_date, departure_airport = arrival_airport_id, arrival_airport = departure_airport_id).order_by('flight_prices__price')
             
         elif selectedValue == "time_asc":
-            departure_dates = FlightSchedule.objects.filter(departure_date__icontains = departure_date).order_by('departure_time')
-            arrival_dates = FlightSchedule.objects.filter(arrival_date__icontains = arrival_date).order_by('departure_time')
+            departure_dates = FlightSchedule.objects.filter(departure_date = departure_date, departure_airport = departure_airport_id, arrival_airport = arrival_airport_id).order_by('departure_time')
+            arrival_dates = FlightSchedule.objects.filter(arrival_date = arrival_date, departure_airport = arrival_airport_id, arrival_airport = departure_airport_id).order_by('departure_time')
             
         elif selectedValue == "time_desc":
-            departure_dates = FlightSchedule.objects.filter(departure_date__icontains = departure_date).order_by('-departure_time')
-            arrival_dates = FlightSchedule.objects.filter(arrival_date__icontains = arrival_date).order_by('-departure_time')
-            
+            departure_dates = FlightSchedule.objects.filter(departure_date = departure_date, departure_airport = departure_airport_id, arrival_airport = arrival_airport_id).order_by('-departure_time')
+            arrival_dates = FlightSchedule.objects.filter(arrival_date = arrival_date, departure_airport = arrival_airport_id, arrival_airport = departure_airport_id).order_by('-departure_time')
         
         
-        departure_count = FlightSchedule.objects.filter(departure_date__icontains = departure_date).count()
-        arrival_count = FlightSchedule.objects.filter(arrival_date__icontains = arrival_date).count()
+        departure_count = FlightSchedule.objects.filter(departure_date = departure_date,departure_airport = departure_airport_id, arrival_airport = arrival_airport_id).count()
+        arrival_count = FlightSchedule.objects.filter(arrival_date = arrival_date, departure_airport = arrival_airport_id, arrival_airport = departure_airport_id).count()
         
         departure_select = FlightSchedule.objects.filter(flight_code = departure_flight_code)
         departure_selecting = FlightSchedule.objects.filter(flight_code = departure_flight_code).exists()
@@ -92,6 +103,7 @@ class Search(APIView):
         if arrival_select is not None:
             for select in arrival_select:
                 price = FlightPrice.objects.filter(flight_schedule = select.id).first().price
+                remaining_seat = FlightPrice.objects.filter(flight_schedule = select.id).first().remaining_seat
                 arrival_select_list.append(dict(id = select.id,
                                                   flight_code = select.flight_code,
                                                   departure_time = select.departure_time,
@@ -103,7 +115,8 @@ class Search(APIView):
                                                   departure_airport_code = select.departure_airport.code,
                                                   arrival_airport_code = select.arrival_airport.code,
                                                   airline_name = select.airline.name,
-                                                  price= price
+                                                  price= price,
+                                                  remaining_seat = remaining_seat
                                                   ))
          
             
@@ -112,6 +125,7 @@ class Search(APIView):
         if departure_select is not None:
             for select in departure_select:
                 price = FlightPrice.objects.filter(flight_schedule = select.id).first().price
+                remaining_seat = FlightPrice.objects.filter(flight_schedule = select.id).first().remaining_seat
                 departure_select_list.append(dict(id = select.id,
                                                   flight_code = select.flight_code,
                                                   departure_time = select.departure_time,
@@ -123,7 +137,8 @@ class Search(APIView):
                                                   departure_airport_code = select.departure_airport.code,
                                                   arrival_airport_code = select.arrival_airport.code,
                                                   airline_name = select.airline.name,
-                                                  price= price
+                                                  price= price,
+                                                  remaining_seat = remaining_seat
                                                   ))
         
     
@@ -133,6 +148,7 @@ class Search(APIView):
         if departure_selecting == True:
             for arrival in arrival_dates:
                 price = FlightPrice.objects.filter(flight_schedule = arrival.id).first().price
+                remaining_seat = FlightPrice.objects.filter(flight_schedule = arrival.id).first().remaining_seat
                 arrival_list.append(dict(flight_code = arrival.flight_code,
                                     id = arrival.id,
                                     departure_time = arrival.departure_time,
@@ -141,12 +157,14 @@ class Search(APIView):
                                     arrival_date = arrival.arrival_date,
                                     arrival_time = arrival.arrival_time,
                                     departure_airport = arrival.departure_airport,
-                                    price = price
+                                    price = price,
+                                    remaining_seat = remaining_seat
                                     ))
         
         departure_list = []
         for departure in departure_dates:
             price = FlightPrice.objects.filter(flight_schedule = departure.id).first().price
+            remaining_seat = FlightPrice.objects.filter(flight_schedule = departure.id).first().remaining_seat
             departure_list.append(dict(flight_code = departure.flight_code,
                                     id = departure.id,
                                     departure_time = departure.departure_time,
@@ -155,7 +173,8 @@ class Search(APIView):
                                     departure_date = departure.departure_date,
                                     arrival_time = departure.arrival_time,
                                     arrival_airport = departure.arrival_airport,
-                                    price = price
+                                    price = price,
+                                    remaining_seat = remaining_seat
                                     ))
         
         
@@ -206,3 +225,5 @@ class Reservation_create(APIView):
         Reservation.objects.create(user_id = user.id ,departure_reservation_id = departure_reservation.id, arrival_reservation_id = arrival_reservation.id)
         
         return Response(status=200)
+    
+    

@@ -667,15 +667,27 @@
     <script>
       // 항공권 검색
 
-      $(document).ready(function() {
-        $('#search_flight').click(function() {
-          var departure_airport = document.getElementById("departure").value;
-          var arrival_airport = document.getElementById("arrival").value;
-          array = ($('input[name="datepicker"]').val().replace(/(\s*)/g, "").split("~"))
-          var border_count = ($('#select_border').val().replace("승객","").trim().split("명"))[0]
-          var departure_date = array[0]
-          var arrival_date = array[1]
+      $('#search_flight').click(function(event) {
+        var departure_airport = document.getElementById("departure").value;
+        var arrival_airport = document.getElementById("arrival").value;
+        array = ($('input[name="datepicker"]').val().replace(/(\s*)/g, "").split("~"))
+        var border_count = ($('#select_border').val().replace("승객","").trim().split("명"))[0]
+        var departure_date = array[0]
+        var arrival_date = array[1]
+        if (departure_airport.trim() == ""){
+          alert("출발도시를 선택하세요.");
+          event.stopPropagation();
+        }
+        if (departure_airport != "" && arrival_airport.trim() == ""){
+          alert("도착도시를 선택하세요.");
+          event.stopPropagation();
+        }
+        if (departure_airport != "" && arrival_airport != "" && departure_date.trim() == ""){
+          alert("날짜를 선택하세요.");
+          event.stopPropagation();
+        }
 
+        if (!event.isPropagationStopped()) {
           $.ajax({
             type: 'POST',
             url: '/flight/search_data/', // 데이터를 저장할 DRF API URL
@@ -685,14 +697,13 @@
                   departure_date : departure_date,
                   arrival_date : arrival_date},
             success: function(response) {
-                // 데이터가 성공적으로 저장되면 새로운 검색 창으로 이동
-                window.location.href = '/flight/search/'; // 검색 페이지로 이동할 URL
+                window.location.href = '/flight/search/'
             },
             error: function(xhr, errmsg, err) {
                 console.log(errmsg);
             }
           });
-        });
+        }
       });
 
 

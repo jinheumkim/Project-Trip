@@ -13,12 +13,11 @@ Python, Django, Jquery, css
 #### Apps
  * flight
  * user
+![trip - tree](https://github.com/jinheumkim/Project-Trip/assets/126999253/13161e16-0f69-462e-abf2-3376e7851810)
 
 
 ### ERD
 -------------------
-
-![trip - tree](https://github.com/jinheumkim/Project-Trip/assets/126999253/13161e16-0f69-462e-abf2-3376e7851810)
 
 
 ### 구현 기능

@@ -1,4 +1,4 @@
-![예약 완료](https://github.com/jinheumkim/Project-Trip/assets/126999253/09250b28-8e0d-4be2-b838-4f7647e2ee89)# Project-Trip
+# Project-Trip
 
 ### 기술 스택
 ----------------------

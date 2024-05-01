@@ -92,9 +92,15 @@ Python, Django, Jquery, css
 ### settings.py database 정보
 --------------------
 #### settings
+
 DATABASES = {
+
     'default': {
+    
         'ENGINE': 'django.db.backends.sqlite3',
+
         'NAME' : BASE_DIR /'db.sqlite3',
+        
     }
+    
 }

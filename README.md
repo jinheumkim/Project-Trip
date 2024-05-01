@@ -8,15 +8,18 @@ Python, Django, Jquery, css
 항공권 예약 사이트 만들어보기
 ### 프로젝트 구조
 ----------------------
-Project
+#### Project
  * Trip
-Apps
+#### Apps
  * flight
  * user
 
 
 ### ERD
 -------------------
+
+![trip - tree](https://github.com/jinheumkim/Project-Trip/assets/126999253/13161e16-0f69-462e-abf2-3376e7851810)
+
 
 ### 구현 기능
 --------------------
@@ -86,43 +89,12 @@ Apps
 
 
 
-### Aws로 ubuntu 서버 사용
-* putty 사용
-* nginx/uwsgi 사용하여 상시로 서버 띄워놓기
-* docker 사용, mysql image 사용하여 mysql 연동
-* vscode Database Client JDBC로 mysql database를 vscode로 연동
-* ubuntu 서버의 uwsgi.ini에 database 정보 os.environ.get으로 숨겨두기
-* settings_local.py로 메인서버에 개입하지 않고 python manage.py runserver --settings=insta.settings_local로 로컬서버 접속하여 테스트 가능
-
-### settings.py database 정보 및 Actions 정보
+### settings.py database 정보
 --------------------
 #### settings
 DATABASES = {
-    
     'default': {
-        
-        'ENGINE': 'django.db.backends.mysql',
-        
-        'NAME': 'insta',
-        
-        'HOST' : os.environ.get,
-        
-        'USER' : os.environ.get,
-        
-        'PASSWORD' : os.environ.get,
-        
-        'PORT' :'3306',
-    
-        'OPTIONS' : {'charset' : 'utf8mb4'},
-
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME' : BASE_DIR /'db.sqlite3',
     }
-
 }
-#### Actions
-  host : ${{ secrets.HOST }}
-  
-  username : ${{ secrets.USERNAME }}
-  
-  key : ${{secrets.KEY}}
-
-  port : 22
